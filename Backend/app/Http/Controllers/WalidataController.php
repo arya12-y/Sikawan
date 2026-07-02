@@ -7,28 +7,46 @@ use Illuminate\Http\Request;
 
 class WalidataController extends Controller
 {
-    // Mengambil data Walidata SEKALIGUS menempelkan data OPD-nya (relasi)
+    // 1. Menampilkan semua data Walidata beserta asal instansinya (OPD)
     public function index()
     {
-        $walidata = Walidata::with('opd')->orderBy('created_at', 'desc')->get();
-        return response()->json($walidata);
+        return response()->json(Walidata::with('opd')->get());
     }
 
-    // Menyimpan data Walidata baru
+    // 2. Menyimpan data Walidata baru (Tambah)
     public function store(Request $request)
     {
-        $request->validate([
-            'opd_id' => 'required|exists:opd,id',
-            'nama' => 'required|string|max:255',
-            'nip' => 'required|string|max:50',
-            'jabatan' => 'required|string|max:255',
-        ]);
-
         $walidata = Walidata::create($request->all());
+        return response()->json($walidata, 201);
+    }
 
-        return response()->json([
-            'message' => 'Data Walidata berhasil ditambahkan!',
-            'data' => $walidata
-        ], 201);
+    // 3. Mengubah data Walidata yang sudah ada (Edit)
+    public function update(Request $request, string $id)
+    {
+        $walidata = Walidata::find($id);
+        
+        // Jika data tidak ditemukan di database
+        if (!$walidata) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+        
+        // Lakukan update data
+        $walidata->update($request->all());
+        return response()->json(['message' => 'Berhasil diupdate', 'data' => $walidata]);
+    }
+
+    // 4. Menghapus data Walidata (Hapus)
+    public function destroy(string $id)
+    {
+        $walidata = Walidata::find($id);
+        
+        // Jika data tidak ditemukan di database
+        if (!$walidata) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+        
+        // Lakukan penghapusan
+        $walidata->delete();
+        return response()->json(['message' => 'Berhasil dihapus']);
     }
 }

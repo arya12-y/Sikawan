@@ -50,6 +50,7 @@ export default function Dashboard() {
         { name: 'Baik (70-89)', jumlah: stats.grafik_kompetensi['Baik (70-89)'] || 0 },
         { name: 'Kurang (<70)', jumlah: stats.grafik_kompetensi['Kurang (<70)'] || 0 },
     ];
+    console.log("Data Sebaran:", stats.sebaran_kompetensi);
 
     return (
         <div className="container-fluid p-0 min-vh-100 d-flex flex-column">
@@ -66,10 +67,12 @@ export default function Dashboard() {
                     <h6 className="text-uppercase text-muted fw-bold mb-3">Menu Utama</h6>
                     <ul className="nav flex-column">
                         <li className="nav-item mb-2"><Link to="/dashboard" className="nav-link text-white bg-primary rounded text-nowrap">Dashboard</Link></li>
-                        <li className="nav-item mb-2"><Link to="/opd" className="nav-link text-white text-nowrap">Master OPD</Link></li>
-                        <li className="nav-item mb-2"><Link to="/walidata" className="nav-link text-white text-nowrap">Master Walidata</Link></li>
+                        <li className="nav-item mb-2"><Link to="/opd" className="nav-link text-white text-nowrap">OPD</Link></li>
+                        <li className="nav-item mb-2"><Link to="/walidata" className="nav-link text-white text-nowrap">Walidata</Link></li>
                         <li className="nav-item mb-2"><Link to="/pembelajaran" className="nav-link text-white text-nowrap">Pembelajaran</Link></li>
-                        <li className="nav-item mb-2"><Link to="/asesmen" className="nav-link text-white text-nowrap">Asesmen</Link></li>
+                        <li className="nav-item mb-2"><Link to="/soal" className="nav-link text-white text-nowrap">Bank Soal</Link></li>
+                        <li className="nav-item mb-2"><Link to="/asesmen" className="nav-link text-white text-nowrap">Hasil Asesmen</Link></li>
+                        <li className="nav-item mb-2"><Link to="/ujian" className="nav-link text-white text-nowrap">Mulai Ujian CBT</Link></li>
                     </ul>
                 </div>
 
@@ -124,7 +127,7 @@ export default function Dashboard() {
                                 <div className="card-header bg-white fw-bold">Peta Sebaran Kompetensi per OPD</div>
                                 <div className="card-body" style={{ height: '300px' }}>
                                     <ResponsiveContainer width="100%" height="100%">
-                                        <BarChart data={stats.sebaran_kompetensi}>
+                                        <BarChart data={stats.sebaran_kompetensi.map(item => ({...item,lulus: Number(item.lulus),remedial: Number(item.remedial)}))}>
                                             <CartesianGrid strokeDasharray="3 3" />
                                             <XAxis dataKey="nama_opd" />
                                             <YAxis allowDecimals={false} />

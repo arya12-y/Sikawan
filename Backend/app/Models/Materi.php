@@ -11,5 +11,6 @@ class Materi extends Model
     
     protected $table = 'materi';
     // Pastikan ini ada! Tanpa ini, Laravel menolak semua input
-    protected $fillable = ['judul', 'deskripsi', 'link_materi']; 
+    // Tambahkan 'file_path' di ujungnya
+    protected $fillable = ['judul', 'deskripsi', 'link_materi', 'file_path'];
 }

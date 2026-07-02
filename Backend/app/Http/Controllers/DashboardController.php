@@ -15,7 +15,7 @@ class DashboardController extends Controller
         $totalOpd = Opd::count();
         $totalWalidata = Walidata::count();
         
-        $sudahSertifikasi = Asesmen::where('keterangan', 'Lulus')->count();
+        $sudahSertifikasi = Asesmen::where('skor', '>=', 70)->count();
         $belumSertifikasi = $totalWalidata - $sudahSertifikasi; 
         
         $nilaiRataRata = Asesmen::avg('skor') ?? 0;
@@ -59,8 +59,10 @@ class DashboardController extends Controller
             ->join('asesmen', 'walidata.id', '=', 'asesmen.walidata_id')
             ->select(
                 'opd.nama_opd as nama_opd',
-                DB::raw('SUM(CASE WHEN asesmen.keterangan = "Lulus" THEN 1 ELSE 0 END) as lulus'),
-                DB::raw('SUM(CASE WHEN asesmen.keterangan = "Remedial" THEN 1 ELSE 0 END) as remedial')
+                // Jika skor >= 70 hitung sebagai lulus
+                DB::raw('SUM(CASE WHEN asesmen.skor >= 70 THEN 1 ELSE 0 END) as lulus'),
+                // Jika skor < 70 hitung sebagai remedial
+                DB::raw('SUM(CASE WHEN asesmen.skor < 70 THEN 1 ELSE 0 END) as remedial')
             )
             ->groupBy('opd.id', 'opd.nama_opd')
             ->get();
